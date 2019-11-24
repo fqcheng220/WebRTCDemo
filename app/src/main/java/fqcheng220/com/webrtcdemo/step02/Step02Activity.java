@@ -1,11 +1,14 @@
-package fqcheng220.com.webrtcdemo;
+package fqcheng220.com.webrtcdemo.step02;
 
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.webrtc.Camera1Enumerator;
+import org.webrtc.DefaultVideoDecoderFactory;
+import org.webrtc.DefaultVideoEncoderFactory;
 import org.webrtc.EglBase;
 import org.webrtc.IceCandidate;
 import org.webrtc.MediaConstraints;
@@ -13,10 +16,13 @@ import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.SessionDescription;
+import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoCapturer;
 import org.webrtc.VideoSource;
 import org.webrtc.VideoTrack;
+
+import fqcheng220.com.webrtcdemo.R;
 
 /**
  * @author fqcheng220
@@ -24,7 +30,7 @@ import org.webrtc.VideoTrack;
  * @Description: (用一句话描述该文件做什么)
  * @date 2019/11/22 14:42
  */
-public class LoopbackActivity extends AppCompatActivity {
+public class Step02Activity extends AppCompatActivity {
 
   private PeerConnection mPeerConnectionLocal;
   private PeerConnection mPeerConnectionRemote;
@@ -33,30 +39,71 @@ public class LoopbackActivity extends AppCompatActivity {
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_loopback);
+    setContentView(R.layout.activity_step02);
     mLocalView = findViewById(R.id.localView);
     mRemoteView = findViewById(R.id.remoteView);
-
-    EglBase.Context eglBaseContext = EglBase.create().getEglBaseContext();
-    mLocalView.init(eglBaseContext,null);
-    mRemoteView.init(eglBaseContext,null);
 
     initWebRTCEnv();
   }
 
   private void initWebRTCEnv(){
+    EglBase.Context eglBaseContext = EglBase.create().getEglBaseContext();
+//    mLocalView.init(eglBaseContext,null);
+//    mRemoteView.init(eglBaseContext,null);
+
+//    // create PeerConnectionFactory
+//    PeerConnectionFactory.InitializationOptions initializationOptions = PeerConnectionFactory.InitializationOptions.builder(this).createInitializationOptions();
+//    PeerConnectionFactory.initialize(initializationOptions);
+//    PeerConnectionFactory peerConnectionFactory = PeerConnectionFactory.builder().createPeerConnectionFactory();
+
     // create PeerConnectionFactory
-    PeerConnectionFactory.InitializationOptions initializationOptions = PeerConnectionFactory.InitializationOptions.builder(this).createInitializationOptions();
-    PeerConnectionFactory.initialize(initializationOptions);
-    PeerConnectionFactory peerConnectionFactory = PeerConnectionFactory.builder().createPeerConnectionFactory();
+    PeerConnectionFactory.initialize(PeerConnectionFactory.InitializationOptions
+            .builder(this)
+            .createInitializationOptions());
+    PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
+    DefaultVideoEncoderFactory defaultVideoEncoderFactory =
+            new DefaultVideoEncoderFactory(eglBaseContext, true, true);
+    DefaultVideoDecoderFactory defaultVideoDecoderFactory =
+            new DefaultVideoDecoderFactory(eglBaseContext);
+    PeerConnectionFactory peerConnectionFactory = PeerConnectionFactory.builder()
+            .setOptions(options)
+            .setVideoEncoderFactory(defaultVideoEncoderFactory)
+            .setVideoDecoderFactory(defaultVideoDecoderFactory)
+            .createPeerConnectionFactory();
 
     VideoCapturer localVideoCapturer = createCameraCapturer(true);
     VideoSource localVideoSource = peerConnectionFactory.createVideoSource(localVideoCapturer.isScreencast());
-    VideoTrack localVideoTrack = peerConnectionFactory.createVideoTrack("localVideoTrack",localVideoSource);
+//    VideoTrack localVideoTrack = peerConnectionFactory.createVideoTrack("localVideoTrack",localVideoSource);
+    SurfaceTextureHelper surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread",eglBaseContext);
+    localVideoCapturer.initialize(surfaceTextureHelper,getApplicationContext(),localVideoSource.getCapturerObserver());
+//    localVideoCapturer.startCapture(480, 640, 30);
+
+    //origin start
+    mLocalView = findViewById(R.id.localView);
+    mLocalView.setMirror(true);
+    mLocalView.init(eglBaseContext, null);
+    // create VideoTrack
+    VideoTrack localVideoTrack = peerConnectionFactory.createVideoTrack("100", localVideoSource);
+//        // display in localView
+//        videoTrack.addSink(localView);
+    //origin end
 
     VideoCapturer remoteVideoCapturer = createCameraCapturer(false);
     VideoSource remoteVideoSource = peerConnectionFactory.createVideoSource(remoteVideoCapturer.isScreencast());
-    VideoTrack remoteVideoTrack = peerConnectionFactory.createVideoTrack("remoteVideoTrack",remoteVideoSource);
+//    VideoTrack remoteVideoTrack = peerConnectionFactory.createVideoTrack("remoteVideoTrack",remoteVideoSource);
+    SurfaceTextureHelper surfaceTextureHelperRemote = SurfaceTextureHelper.create("RemoteCaptureThread",eglBaseContext);
+    remoteVideoCapturer.initialize(surfaceTextureHelperRemote,getApplicationContext(),remoteVideoSource.getCapturerObserver());
+    remoteVideoCapturer.startCapture(480, 640, 30);
+
+    //origin start
+    mRemoteView = findViewById(R.id.remoteView);
+    mRemoteView.setMirror(false);
+    mRemoteView.init(eglBaseContext, null);
+    // create VideoTrack
+    VideoTrack remoteVideoTrack = peerConnectionFactory.createVideoTrack("102", remoteVideoSource);
+//        // display in localView
+//        videoTrack.addSink(localView);
+    //origin end
 
     MediaStream localMediaStream = peerConnectionFactory.createLocalMediaStream("local");
     localMediaStream.addTrack(localVideoTrack);
@@ -92,7 +139,7 @@ public class LoopbackActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
           @Override public void run() {
             if(videoTrack != null){
-              videoTrack.addSink(mLocalView);
+              videoTrack.addSink(mRemoteView);
             }
           }
         });
@@ -119,7 +166,7 @@ public class LoopbackActivity extends AppCompatActivity {
           public void onCreateSuccess(SessionDescription sdp) {
             super.onCreateSuccess(sdp);
             mPeerConnectionRemote.setLocalDescription(new SdpAdapter("remote set local"), sdp);
-            mPeerConnectionRemote.setRemoteDescription(new SdpAdapter("local set remote"), sdp);
+            mPeerConnectionLocal.setRemoteDescription(new SdpAdapter("local set remote"), sdp);
           }
         }, new MediaConstraints());
       }

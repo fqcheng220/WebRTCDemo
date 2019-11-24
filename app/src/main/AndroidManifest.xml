@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".LoopbackActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -21,7 +21,16 @@
         </activity>
 
         <activity
-            android:name=".MainActivity">
+            android:name=".step01.Step01Activity">
+        </activity>
+        <activity
+            android:name=".step02.OriginLoopbackActivity">
+        </activity>
+        <activity
+            android:name=".step02.Step02Activity">
+        </activity>
+        <activity
+            android:name=".step03.Step03Activity">
         </activity>
     </application>
 

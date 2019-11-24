@@ -1,4 +1,4 @@
-package fqcheng220.com.webrtcdemo;
+package fqcheng220.com.webrtcdemo.step02;
 
 import android.util.Log;
 import org.webrtc.DataChannel;
@@ -22,7 +22,7 @@ public class PeerConnectionAdapter implements PeerConnection.Observer {
   }
 
   private void log(String s) {
-    Log.d(tag, s);
+    Log.e(tag, s);
   }
 
   @Override
