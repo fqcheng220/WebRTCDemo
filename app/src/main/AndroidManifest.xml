@@ -32,6 +32,10 @@
         <activity
             android:name=".step03.Step03Activity">
         </activity>
+
+        <activity
+            android:name=".opengl.demo1.Demo1OpenGLActivity">
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
