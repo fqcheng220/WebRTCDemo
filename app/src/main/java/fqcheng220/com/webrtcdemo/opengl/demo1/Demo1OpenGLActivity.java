@@ -21,7 +21,11 @@ public class Demo1OpenGLActivity extends AppCompatActivity {
     // 设置OpenGL版本(一定要设置) 注意必须设置 否则不显示
     glSurfaceView.setEGLContextClientVersion(2);
     // 设置渲染器(后面会着重讲这个渲染器的类)
-    glSurfaceView.setRenderer(new Demo1GLSurfaceViewRender());
+    Demo1GLSurfaceViewRender render = new Demo1GLSurfaceViewRender();
+    //render.setmDrawDemo(new ShapeTriangle());
+    //render.setmDrawDemo(new ShapePolygon());
+    render.setmDrawDemo(new TextureDraw(this));
+    glSurfaceView.setRenderer(render);
     // 设置渲染模式为连续模式(会以60fps的速度刷新)
     glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
   }
