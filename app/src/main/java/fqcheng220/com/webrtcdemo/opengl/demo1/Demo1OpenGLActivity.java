@@ -33,4 +33,8 @@ public class Demo1OpenGLActivity extends AppCompatActivity {
     // 设置渲染模式为连续模式(会以60fps的速度刷新)
     glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
   }
+
+  @Override protected void onDestroy() {
+    super.onDestroy();
+  }
 }

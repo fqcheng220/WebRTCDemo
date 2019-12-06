@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
-import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.util.Log;
 import fqcheng220.com.webrtcdemo.R;
@@ -104,6 +103,8 @@ public class TextureDraw implements IDrawDemo {
   private static final boolean sEnableProjection = true;
 
   protected int mProgramId;
+  private int mTextureId;
+
   private int mVPosition;
   private int mUMatrix;
   private int mVTextureCoordinate;
@@ -116,6 +117,8 @@ public class TextureDraw implements IDrawDemo {
   private String mSourceVertexShader;
   private String mSourceFragmentShader;
 
+  private int mDrawCount = 0;
+
   public TextureDraw(Context context){
     this(context,VERTEX_SHADER,FRAGMENT_SHADER);
   }
@@ -127,7 +130,12 @@ public class TextureDraw implements IDrawDemo {
   }
 
   @Override public void init() {
+    GLES20.glClearColor(0, 0, 0, 1);
+    GLES20.glDisable(GLES20.GL_DEPTH_TEST); // 当我们需要绘制透明图片时，就需要关闭它
+
     mProgramId = GLCustomUTils.createProgram(mSourceVertexShader,mSourceFragmentShader);
+    mTextureId = loadBitmapToTexture(mCtx);
+
     mVPosition = GLES20.glGetAttribLocation(mProgramId, "a_Position");
     mUMatrix = GLES20.glGetUniformLocation(mProgramId, "u_Matrix");
     mVTextureCoordinate = GLES20.glGetAttribLocation(mProgramId, "a_TexCoord");
@@ -140,7 +148,9 @@ public class TextureDraw implements IDrawDemo {
   }
 
   @Override public void draw() {
-    int textureId = loadBitmapToTexture(mCtx);
+    Log.d(TAG, "draw " + (++mDrawCount));
+
+    mTextureId = loadBitmapToTexture(mCtx);
 
     GLES20.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
@@ -155,7 +165,7 @@ public class TextureDraw implements IDrawDemo {
     // 设置当前活动的纹理单元为纹理单元0
     GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
     // 绑定textureId到纹理目标GL_TEXTURE_2D 有多种纹理目标
-    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,textureId);
+    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,mTextureId);
     // 将纹理单元传递片段着色器的u_TextureUnit GLSL中操作的sampler2D是glint型 可以赋值为纹理单元
     GLES20.glUniform1i(mUTextureUnit,0);
 
@@ -169,39 +179,18 @@ public class TextureDraw implements IDrawDemo {
     GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
   }
 
-  private int loadBitmapToTexture(Context context){
-    Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.test);
-    if(bitmap == null){
-      Log.e(TAG,"bitmap==null");
+  private int loadBitmapToTexture(Context context) {
+    final BitmapFactory.Options options = new BitmapFactory.Options();
+    options.inScaled = false;
+    Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.test, options);
+    if (bitmap == null) {
+      Log.e(TAG, "bitmap==null");
       return 0;
     }
-    int[] textureIds = new int[2];
-    GLES20.glGenTextures(1,textureIds,0);
-    if(textureIds[0] == 0){
-      Log.e(TAG,"glGenTextures error");
-      return 0;
-    }
-    // 2. 将纹理绑定到OpenGL对象上
-    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,textureIds[0]);
-    // 3. 设置纹理过滤参数:解决纹理缩放过程中的锯齿问题。若不设置，则会导致纹理为黑色
-    GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
-    GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-    // 4. 通过OpenGL对象读取Bitmap数据，并且绑定到纹理对象上，之后就可以回收Bitmap对象
-    GLUtils.texImage2D(GLES20.GL_TEXTURE_2D,0,bitmap,0);
-    // Note: Following code may cause an error to be reported in the
-    // ADB log as follows: E/IMGSRV(20095): :0: HardwareMipGen:
-    // Failed to generate texture mipmap levels (error=3)
-    // No OpenGL error will be encountered (glGetError() will return
-    // 0). If this happens, just squash the source image to be
-    // square. It will look the same because of texture coordinates,
-    // and mipmap generation will work.
-    // 5. 生成Mip位图
-    GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
-    //
-    bitmap.recycle();
-    // 7. 将纹理从OpenGL对象上解绑
-    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,0);
-    return textureIds[0];
+    android.graphics.Matrix matrix = new android.graphics.Matrix();
+    matrix.postTranslate(0.5f,0.5f);
+    bitmap = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,false);
+    return TextureUtils.loadBitmapToTextureV2(bitmap,false,mTextureId);
   }
 
   /**
