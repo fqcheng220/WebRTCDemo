@@ -27,7 +27,7 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class TextureDraw implements IDrawDemo {
   private final String TAG = getClass().getSimpleName();
-  private static final String VERTEX_SHADER = "" +
+  protected static final String VERTEX_SHADER = "" +
       "uniform mat4 u_Matrix;\n" +
       "attribute vec4 a_Position;\n" +
       // 纹理坐标：2个分量，S和T坐标
@@ -103,7 +103,7 @@ public class TextureDraw implements IDrawDemo {
       };
   private static final boolean sEnableProjection = true;
 
-  private int mProgramId;
+  protected int mProgramId;
   private int mVPosition;
   private int mUMatrix;
   private int mVTextureCoordinate;
@@ -113,12 +113,21 @@ public class TextureDraw implements IDrawDemo {
   private int mHeight;
 
   private Context mCtx;
+  private String mSourceVertexShader;
+  private String mSourceFragmentShader;
+
   public TextureDraw(Context context){
+    this(context,VERTEX_SHADER,FRAGMENT_SHADER);
+  }
+
+  public TextureDraw(Context context,String sourceVertexShader,String sourceFragmentShader){
     mCtx = context;
+    mSourceFragmentShader = sourceFragmentShader;
+    mSourceVertexShader = sourceVertexShader;
   }
 
   @Override public void init() {
-    mProgramId = GLCustomUTils.createProgram(VERTEX_SHADER,FRAGMENT_SHADER);
+    mProgramId = GLCustomUTils.createProgram(mSourceVertexShader,mSourceFragmentShader);
     mVPosition = GLES20.glGetAttribLocation(mProgramId, "a_Position");
     mUMatrix = GLES20.glGetUniformLocation(mProgramId, "u_Matrix");
     mVTextureCoordinate = GLES20.glGetAttribLocation(mProgramId, "a_TexCoord");

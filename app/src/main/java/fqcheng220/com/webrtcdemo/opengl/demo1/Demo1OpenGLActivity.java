@@ -24,7 +24,11 @@ public class Demo1OpenGLActivity extends AppCompatActivity {
     Demo1GLSurfaceViewRender render = new Demo1GLSurfaceViewRender();
     //render.setmDrawDemo(new ShapeTriangle());
     //render.setmDrawDemo(new ShapePolygon());
-    render.setmDrawDemo(new TextureDraw(this));
+//    render.setmDrawDemo(new TextureDraw(this));
+//    render.setmDrawDemo(new ColorFilterInverse(this));
+//    render.setmDrawDemo(new ColorFIlterGray(this));
+//    render.setmDrawDemo(new ColorFilterLightUp(this));
+    render.setmDrawDemo(new PositionFilterTranslate(this));
     glSurfaceView.setRenderer(render);
     // 设置渲染模式为连续模式(会以60fps的速度刷新)
     glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
