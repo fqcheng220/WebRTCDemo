@@ -7,7 +7,6 @@ import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.util.Log;
-import android.view.Surface;
 import fqcheng220.com.webrtcdemo.opengl.demo1.ByteBufferUtils;
 import fqcheng220.com.webrtcdemo.opengl.demo1.GLCustomUTils;
 import fqcheng220.com.webrtcdemo.opengl.demo1.IDrawDemo;
@@ -103,8 +102,7 @@ public class CameraPreview implements IDrawDemo {
         mSurfaceUpdated = true;
       }
     });
-    Camera camera = Camera.open(0);
-    //setCameraDisplayOrientation(mActivity,0,camera);
+    Camera camera = CameraUtils.cameraOpen(0,mActivity,320,480,30);
     try {
       camera.setPreviewTexture(mSurfaceTexture);
     } catch (IOException e) {
