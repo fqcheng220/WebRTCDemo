@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import fqcheng220.com.webrtcdemo.R;
+import fqcheng220.com.webrtcdemo.opengl.demo2.CameraPreview;
 
 /**
  * @author fqcheng220
@@ -28,7 +29,8 @@ public class Demo1OpenGLActivity extends AppCompatActivity {
 //    render.setmDrawDemo(new ColorFilterInverse(this));
 //    render.setmDrawDemo(new ColorFIlterGray(this));
 //    render.setmDrawDemo(new ColorFilterLightUp(this));
-    render.setmDrawDemo(new PositionFilterTranslate(this));
+//    render.setmDrawDemo(new PositionFilterTranslate(this));
+    render.setmDrawDemo(new CameraPreview(this));
     glSurfaceView.setRenderer(render);
     // 设置渲染模式为连续模式(会以60fps的速度刷新)
     glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
