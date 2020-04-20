@@ -1,4 +1,4 @@
-package fqcheng220.com.webrtcdemo.opengl.demo1;
+package fqcheng220.com.webrtcdemo.opengl.utils;
 
 import android.graphics.Bitmap;
 import android.opengl.GLES11Ext;

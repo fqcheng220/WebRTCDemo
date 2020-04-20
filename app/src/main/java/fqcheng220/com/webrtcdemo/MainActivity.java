@@ -7,7 +7,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import fqcheng220.com.webrtcdemo.opengl.demo1.Demo1OpenGLActivity;
+import fqcheng220.com.webrtcdemo.opengl.DemoListOpenGLActivity;
 import fqcheng220.com.webrtcdemo.step01.Step01Activity;
 import fqcheng220.com.webrtcdemo.step02.Step02Activity;
 import fqcheng220.com.webrtcdemo.step03.Step03Activity;
@@ -42,11 +42,11 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.startActivity(intent);
             }
         });
-        findViewById(R.id.btn_opengl_demo1).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btn_opengl_demo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.setClass(MainActivity.this, Demo1OpenGLActivity.class);
+                intent.setClass(MainActivity.this, DemoListOpenGLActivity.class);
                 MainActivity.this.startActivity(intent);
             }
         });

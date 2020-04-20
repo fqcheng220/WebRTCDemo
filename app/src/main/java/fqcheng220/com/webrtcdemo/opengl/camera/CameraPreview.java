@@ -1,4 +1,4 @@
-package fqcheng220.com.webrtcdemo.opengl.demo2;
+package fqcheng220.com.webrtcdemo.opengl.camera;
 
 import android.app.Activity;
 import android.graphics.SurfaceTexture;
@@ -7,10 +7,10 @@ import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.util.Log;
-import fqcheng220.com.webrtcdemo.opengl.demo1.ByteBufferUtils;
-import fqcheng220.com.webrtcdemo.opengl.demo1.GLCustomUTils;
-import fqcheng220.com.webrtcdemo.opengl.demo1.IDrawDemo;
-import fqcheng220.com.webrtcdemo.opengl.demo1.TextureUtils;
+import fqcheng220.com.webrtcdemo.opengl.utils.ByteBufferUtils;
+import fqcheng220.com.webrtcdemo.opengl.utils.GLCustomUTils;
+import fqcheng220.com.webrtcdemo.opengl.IDrawDemo;
+import fqcheng220.com.webrtcdemo.opengl.utils.TextureUtils;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import javax.microedition.khronos.opengles.GL10;

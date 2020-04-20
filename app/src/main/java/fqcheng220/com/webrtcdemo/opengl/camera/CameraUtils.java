@@ -1,4 +1,4 @@
-package fqcheng220.com.webrtcdemo.opengl.demo2;
+package fqcheng220.com.webrtcdemo.opengl.camera;
 
 import android.app.Activity;
 import android.hardware.Camera;

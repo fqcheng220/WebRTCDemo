@@ -1,4 +1,4 @@
-package fqcheng220.com.webrtcdemo.opengl.demo2;
+package fqcheng220.com.webrtcdemo.opengl.camera;
 
 /**
  * @author fqcheng220

@@ -1,4 +1,4 @@
-package fqcheng220.com.webrtcdemo.opengl.demo1;
+package fqcheng220.com.webrtcdemo.opengl.texture;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,6 +7,10 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.util.Log;
 import fqcheng220.com.webrtcdemo.R;
+import fqcheng220.com.webrtcdemo.opengl.utils.ByteBufferUtils;
+import fqcheng220.com.webrtcdemo.opengl.utils.GLCustomUTils;
+import fqcheng220.com.webrtcdemo.opengl.IDrawDemo;
+import fqcheng220.com.webrtcdemo.opengl.utils.TextureUtils;
 import javax.microedition.khronos.opengles.GL10;
 
 /**
@@ -37,9 +41,18 @@ public class TextureDraw implements IDrawDemo {
       "    v_TexCoord = a_TexCoord;\n" +
       "    gl_Position = u_Matrix * a_Position;\n" +
       "}";
+  //private static final String FRAGMENT_SHADER = "" +
+  //    "precision mediump float;\n" +
+  //    "varying vec2 v_TexCoord;\n" +
+  //    "uniform sampler2D u_TextureUnit;\n" +
+  //    "void main()\n" +
+  //    "{\n" +
+  //    "    gl_FragColor = texture2D(u_TextureUnit, v_TexCoord);\n" +
+  //    "}";
   private static final String FRAGMENT_SHADER = "" +
       "precision mediump float;\n" +
       "varying vec2 v_TexCoord;\n" +
+      "uniform vec2 u_TexCoord;\n" +
       "uniform sampler2D u_TextureUnit;\n" +
       "void main()\n" +
       "{\n" +
@@ -108,6 +121,7 @@ public class TextureDraw implements IDrawDemo {
   private int mVPosition;
   private int mUMatrix;
   private int mVTextureCoordinate;
+  private int mUTextureCoordinate;
   private int mUTextureUnit;
 
   private int mWidth;
@@ -139,6 +153,7 @@ public class TextureDraw implements IDrawDemo {
     mVPosition = GLES20.glGetAttribLocation(mProgramId, "a_Position");
     mUMatrix = GLES20.glGetUniformLocation(mProgramId, "u_Matrix");
     mVTextureCoordinate = GLES20.glGetAttribLocation(mProgramId, "a_TexCoord");
+    mUTextureCoordinate = GLES20.glGetUniformLocation(mProgramId, "u_TexCoord");
     mUTextureUnit = GLES20.glGetUniformLocation(mProgramId,"u_TextureUnit");
   }
 
@@ -157,10 +172,17 @@ public class TextureDraw implements IDrawDemo {
     GLES20.glUseProgram(mProgramId);
 
     GLES20.glEnableVertexAttribArray(mVPosition);
-    GLES20.glVertexAttribPointer(mVPosition,2,GLES20.GL_FLOAT,true,0,ByteBufferUtils.getFloatBuffer(POSITION));
+    GLES20.glVertexAttribPointer(mVPosition,2,GLES20.GL_FLOAT,true,0, ByteBufferUtils.getFloatBuffer(POSITION));
 
     GLES20.glEnableVertexAttribArray(mVTextureCoordinate);
     GLES20.glVertexAttribPointer(mVTextureCoordinate,2,GLES20.GL_FLOAT,true,0,ByteBufferUtils.getFloatBuffer(TEXTURE_COORDINATE));
+
+    //测试无效
+    //在片元着色器中使用uniform限定符修饰的变量替换varying限定符修饰的变量
+    //varying限定符修饰的变量是vertex和fragment shader之间做数据传递用的，并且OpenGL ES会对其进行线性插值 很重要！！！
+    //https://blog.csdn.net/lb377463323/article/details/65939279
+    //https://upload-images.jianshu.io/upload_images/1909670-1f4ad6bfe79c0fa2.jpg?imageMogr2/auto-orient/strip|imageView2/2/format/webp
+    GLES20.glUniform2fv(mUTextureCoordinate,2,ByteBufferUtils.getFloatBuffer(TEXTURE_COORDINATE));
 
     // 设置当前活动的纹理单元为纹理单元0
     GLES20.glActiveTexture(GLES20.GL_TEXTURE0);

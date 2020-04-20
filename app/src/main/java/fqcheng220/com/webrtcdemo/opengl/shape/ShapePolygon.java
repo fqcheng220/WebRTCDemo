@@ -1,10 +1,10 @@
-package fqcheng220.com.webrtcdemo.opengl.demo1;
+package fqcheng220.com.webrtcdemo.opengl.shape;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
+import fqcheng220.com.webrtcdemo.opengl.utils.ByteBufferUtils;
+import fqcheng220.com.webrtcdemo.opengl.utils.GLCustomUTils;
+import fqcheng220.com.webrtcdemo.opengl.IDrawDemo;
 
 /**
  * @author fqcheng220
@@ -25,7 +25,7 @@ import java.nio.FloatBuffer;
  * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
  * @date 2019/12/5 14:57
  */
-public class ShapeTriangle implements IDrawDemo {
+public class ShapePolygon implements IDrawDemo {
   private static final String VERTEX_SOURCE = "attribute vec2 vPosition;            \n" // 顶点位置属性vPosition
       +"uniform mat4 u_Matrix;            \n"//如果不使用mat4（4X4矩阵） 屏幕实际显示会拉伸
       + "void main(){                         \n" + "   gl_Position = u_Matrix * vec4(vPosition,0,1);\n" // 确定顶点位置
@@ -74,40 +74,40 @@ public class ShapeTriangle implements IDrawDemo {
   }
 
   @Override public void draw() {
-    drawTriangle();
+    drawPolygon(5,0.5f);
   }
 
-  private void drawTriangle() {
+  /**
+   * 绘制多边形Polygon
+   * @param polygonCount 边数
+   * @param radius 半径
+   */
+  private void drawPolygon(int polygonCount, float radius) {
     // 清屏
     GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
-    // 使用某套shader程序 注意必须设置 否则不显示
+    float[] pointData = new float[(polygonCount + 2) * 2];
+    pointData[0] = 0f;
+    pointData[1] = 0f;
+    //弧度
+    float radian = (float) (2 * Math.PI / polygonCount);
+    for (int i = 0; i < polygonCount; i++) {
+      pointData[2 * i + 2] = (float) (radius * Math.cos(i * radian));
+      pointData[2 * i + 2 + 1] = (float) (radius * Math.sin(i * radian));
+    }
+    pointData[2 * polygonCount + 2] = (float) (radius * Math.cos(0));
+    pointData[2 * polygonCount + 3] = (float) (radius * Math.sin(0));
+
     GLES20.glUseProgram(mProgramId);
 
-    // 允许顶点位置数据数组 注意必须设置 否则不显示
     GLES20.glEnableVertexAttribArray(mVPosition);
-    //注意参数normalized为true或者false 貌似不受影响
-    GLES20.glVertexAttribPointer(mVPosition, 2, GLES20.GL_FLOAT, true, 0, getVertexBuffer());
+    GLES20.glVertexAttribPointer(mVPosition,2,GLES20.GL_FLOAT,false,0, ByteBufferUtils.getFloatBuffer(pointData));
 
-    GLES20.glUniform4f(mUColor, 1.0f, 0f, 1.0f, 1.0f);
+    GLES20.glUniform4f(mUColor,1.0f,0f,0f,1.0f);
 
     enableProjection(mWidth,mHeight);
 
-    //注意：第三个参数为顶点数量
-    //GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 3);
-    GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, 3);
-  }
-
-  private FloatBuffer getVertexBuffer() {
-    float[] vertex = new float[] {
-        0f, 0.5f, 0.5f, 0f, -0.5f, 0f
-    };
-    ByteBuffer byteBuffer = ByteBuffer.allocateDirect(vertex.length * 4);
-    byteBuffer.order(ByteOrder.nativeOrder());//设置字节顺序 注意必须设置 否则不显示
-    FloatBuffer ret = byteBuffer.asFloatBuffer();
-    ret.put(vertex);//向缓冲区中放入顶点坐标数据 注意必须设置 否则不显示
-    ret.position(0);//设置缓冲区起始位置 注意必须设置 否则不显示
-    return ret;
+    GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN,0,polygonCount + 2);
   }
 
 

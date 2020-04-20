@@ -1,7 +1,8 @@
-package fqcheng220.com.webrtcdemo.opengl.demo1;
+package fqcheng220.com.webrtcdemo.opengl.filter;
 
 import android.content.Context;
 import android.opengl.GLES20;
+import fqcheng220.com.webrtcdemo.opengl.texture.TextureDraw;
 
 public class PositionFilterTranslate extends TextureDraw {
     //main函数里不能直接使用1.0f，会报错

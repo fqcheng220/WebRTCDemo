@@ -33,8 +33,8 @@
         app:layout_constraintTop_toBottomOf="@id/btn_step02" />
 
     <Button
-        android:id="@+id/btn_opengl_demo1"
-        android:text="opengl_demo1"
+        android:id="@+id/btn_opengl_demo"
+        android:text="opengl_demo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"

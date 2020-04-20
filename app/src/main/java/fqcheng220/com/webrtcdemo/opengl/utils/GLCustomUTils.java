@@ -1,4 +1,4 @@
-package fqcheng220.com.webrtcdemo.opengl.demo1;
+package fqcheng220.com.webrtcdemo.opengl.utils;
 
 import android.opengl.GLES20;
 import android.util.Log;

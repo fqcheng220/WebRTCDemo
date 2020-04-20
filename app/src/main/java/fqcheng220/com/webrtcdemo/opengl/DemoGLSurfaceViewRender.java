@@ -1,4 +1,4 @@
-package fqcheng220.com.webrtcdemo.opengl.demo1;
+package fqcheng220.com.webrtcdemo.opengl;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
@@ -25,7 +25,7 @@ GL_TRIANGLE_FAN	三角形	第一个点和之后所有相邻的2个点构成一�
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
  * @date 2019/12/4 16:09
  */
-public class Demo1GLSurfaceViewRender implements GLSurfaceView.Renderer {
+public class DemoGLSurfaceViewRender implements GLSurfaceView.Renderer {
   private final String TAG = getClass().getSimpleName();
 
   public void setmDrawDemo(IDrawDemo mDrawDemo) {

@@ -34,7 +34,31 @@
         </activity>
 
         <activity
-            android:name=".opengl.demo1.Demo1OpenGLActivity">
+            android:name=".opengl.DemoListOpenGLActivity">
+        </activity>
+        <activity
+            android:name=".opengl.shape.ShapeTriangleDemoOpenGLActivity">
+        </activity>
+        <activity
+            android:name=".opengl.shape.ShapePolygonDemoOpenGLActivity">
+        </activity>
+        <activity
+            android:name=".opengl.texture.TextureDemoOpenGLActivity">
+        </activity>
+        <activity
+            android:name=".opengl.filter.ColorFilterGrayDemoOpenGLActivity">
+        </activity>
+        <activity
+            android:name=".opengl.filter.ColorFilterInverseDemoOpenGLActivity">
+        </activity>
+        <activity
+            android:name=".opengl.filter.ColorFilterLightUpDemoOpenGLActivity">
+        </activity>
+        <activity
+            android:name=".opengl.filter.PositionFilterTranslateDemoOpenGLActivity">
+        </activity>
+        <activity
+            android:name=".opengl.camera.CameraPreviewDemoOpenGLActivity">
         </activity>
     </application>
 
